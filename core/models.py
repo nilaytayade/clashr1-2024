@@ -1,3 +1,4 @@
+from typing import Any
 from django.db import models
 
 
@@ -13,10 +14,17 @@ class Mcq(models.Model):
     positive_marks = models.IntegerField(default=4)
     negative_marks = models.IntegerField(default=-2)
 
+    def __str__(self):
+        return str(self.question_id)
+
+
 class Custom_user(models.Model):
     user_id = models.AutoField(primary_key=True)
     score = models.IntegerField(default=0)
     current_question = models.ForeignKey(Mcq,default=1, on_delete=models.CASCADE, blank=False, null=True)
+    
+    def __str__(self):
+        return str(self.user_id)+"👉"+str(self.current_question)+"🌟"+str(self.score)
 
 
 class Submission(models.Model):
@@ -24,5 +32,7 @@ class Submission(models.Model):
     user_id = models.ForeignKey(Custom_user, on_delete=models.CASCADE, blank=False)
     question_id = models.ForeignKey(Mcq, on_delete=models.CASCADE, blank=False)
     selected_option = models.CharField(max_length=1, blank=False)
-    status = models.CharField(max_length=255, blank=False)
+    status = models.BooleanField(blank=False,default=False)
 
+    def __str__(self):
+        return str(self.user_id)+"👉"+str(self.question_id)+"👉"+str(self.selected_option)+"👉"+str(self.status)
