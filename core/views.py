@@ -10,7 +10,7 @@ def Get_mcq(request):
         question_id = request.query_params.get("id")
         question = Mcq.objects.get(pk=question_id)
         
-        # Serialize the question data
+        
         serializer = Mcq_Serializer(question)
         return Response(serializer.data)
     
