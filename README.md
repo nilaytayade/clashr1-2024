@@ -1,5 +1,18 @@
-﻿# clashr1-2024
-"Create Own Branch and start contributing after switching to it"
+# Clash-R1
 
-**DB SCHEMA(current)**
+*"Create Own Branch and start contributing after switching to it"*
+
+## Todo List
+
+- [ ] Add Models 🛠️
+- [ ] Create Serializers 🧵
+- [ ] Create Views for 
+  - [ ] Fetch 1 Mcq 📝
+  - [ ] Evaluate Mcq + update score 📊
+  - [ ] Update submission 🔄
+  - [ ] Fetch leaderboard 🏆
+- [ ] Create URLs / API EndPoints 🔗
+
+## DB SCHEMA (current)
 ![Schema](https://res.cloudinary.com/dzhpx2alw/image/upload/v1704877063/WhatsApp_Image_2024-01-07_at_20.12.38_0064bae4_mr98fv.jpg)
+
