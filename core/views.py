@@ -38,12 +38,11 @@ def get_leaderboard(request):
 
 
 def evaluate_mcq(question_id, option):
-    ans = Mcq.objects.get(pk=question_id)
+    ans = Mcq.objects.get(question_id=question_id)
     return True if ans.correct == option else False
 
 def update_score(user_id, question_id, status):
     user = Custom_user.objects.get(pk=user_id)
-    current_question = Mcq.objects.get(pk=question_id)
 
     if status:
         if user.previous_question:
@@ -57,11 +56,10 @@ def update_score(user_id, question_id, status):
             user.score += NEGATIVE_MARKS_2
 
     user.previous_question = status
-    user.current_question = current_question  # Assign the Mcq instance
+    user.current_question += 1
+    user.save()  
 
-    user.save()
-
-
+   
 
 
 @api_view(['POST'])
@@ -70,17 +68,16 @@ def submit(request):
     
     if serializer.is_valid():
         user_instance = serializer.validated_data['user_id']
-        mcq_instance = serializer.validated_data['question_id']
+        question_id = serializer.validated_data['question_id'].question_id
         option = serializer.validated_data['selected_option']
 
-        question_id = mcq_instance.question_id
+    
         user_id = user_instance.user_id
 
         Status = evaluate_mcq(question_id, option)
         update_score(user_id, question_id, Status)
 
         # Use the Mcq instance instead of its ID before saving it to the Submission model
-        serializer.validated_data['question_id'] = mcq_instance
         serializer.validated_data['status'] = Status
         serializer.save()
 

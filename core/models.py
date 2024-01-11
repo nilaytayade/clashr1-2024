@@ -18,7 +18,7 @@ class Mcq(models.Model):
 class Custom_user(models.Model):
     user_id = models.IntegerField(primary_key=True)
     score = models.IntegerField(default=0)
-    current_question = models.ForeignKey(Mcq,default=1, on_delete=models.CASCADE, blank=False, null=True)
+    current_question = models.IntegerField(default=1,blank=False)
     previous_question = models.BooleanField(default=True,blank=False)
     def __str__(self):
         return str(self.user_id)+"👉"+str(self.current_question)+"🌟"+str(self.score)
