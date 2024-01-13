@@ -10,7 +10,7 @@ class Mcq(models.Model):
     b = models.CharField(max_length=255, blank=False)
     c = models.CharField(max_length=255, blank=False)
     d = models.CharField(max_length=255, blank=False)
-    correct = models.CharField(max_length=1, blank=False)
+    correct = models.CharField(max_length=255, blank=False)
     def __str__(self):
         return str(self.question_id)
     
@@ -28,7 +28,7 @@ class Submission(models.Model):
     submission_id = models.AutoField(primary_key=True)
     user_id = models.ForeignKey(Custom_user, on_delete=models.CASCADE, blank=False)
     question_id = models.ForeignKey(Mcq, on_delete=models.CASCADE, blank=False)
-    selected_option = models.CharField(max_length=1, blank=False)
+    selected_option = models.CharField(max_length=255, blank=False)
     status = models.BooleanField(blank=False,default=False)
 
     def __str__(self):

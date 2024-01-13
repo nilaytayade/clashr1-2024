@@ -14,12 +14,14 @@ NEGATIVE_MARKS_1 = -2
 NEGATIVE_MARKS_2 = -1
 
 
-@api_view(['GET'])
+@api_view(['GET','POST'])
 def get_mcq(request):
     try:
-        question_id = request.query_params.get("id")
+        user_id = request.data["user_id"]
+        user = Custom_user.objects.get(pk=user_id)
+        question_id = user.current_question
         question = Mcq.objects.get(pk=question_id)
-        
+        question.correct = "🔒"
         serializer = Mcq_Serializer(question)
         return Response(serializer.data)
     
