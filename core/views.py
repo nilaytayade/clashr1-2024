@@ -85,7 +85,7 @@ def submit(request):
         serializer.validated_data['status'] = Status
         serializer.save()
 
-        return Response(status=status.HTTP_200_OK)
+        return Response({"status":serializer.validated_data['status']},status=status.HTTP_200_OK)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

@@ -5,7 +5,7 @@ from django.db import models
 
 class Mcq(models.Model):
     question_id = models.IntegerField(primary_key=True)
-    question_md = models.CharField(max_length=255, blank=False)
+    question_md = models.CharField(max_length=255, blank=False,default="Enter a Valid Markdown")
     a = models.CharField(max_length=255, blank=False)
     b = models.CharField(max_length=255, blank=False)
     c = models.CharField(max_length=255, blank=False)
