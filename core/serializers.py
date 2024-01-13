@@ -4,7 +4,7 @@ from .models import Mcq,Custom_user,Submission
 class Mcq_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Mcq
-        fields =['question_id','question','a','b','c','d','correct']
+        fields =['question_id','question_md','a','b','c','d','correct','author','authors_note']
 
 class Custom_user_Serializer(serializers.ModelSerializer):
     class Meta:
