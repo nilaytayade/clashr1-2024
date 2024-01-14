@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Mcq,Custom_user,Submission
+from .models import Mcq,Custom_user,Submission,User
 
 class Mcq_Serializer(serializers.ModelSerializer):
     class Meta:
@@ -9,7 +9,7 @@ class Mcq_Serializer(serializers.ModelSerializer):
 class Custom_user_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Custom_user
-        fields =['user_id','score','current_question','previous_question']
+        fields =['username','score','current_question','previous_question']
 
 
 class Submission_Serializer(serializers.ModelSerializer):
@@ -17,3 +17,20 @@ class Submission_Serializer(serializers.ModelSerializer):
         model = Submission
         fields = ['submission_id','user_id','question_id','selected_option','status']
         
+
+# serializers.py
+from rest_framework import serializers
+
+
+
+
+class RegistrationSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password']
+
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField(write_only=True)

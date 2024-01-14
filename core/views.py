@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 from .serializers import Mcq_Serializer, Custom_user_Serializer, Submission_Serializer
-from .models import Mcq, Custom_user, Submission
+from .models import Mcq, Custom_user, Submission,User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
@@ -19,8 +19,8 @@ NEGATIVE_MARKS_2 = -1
 @api_view(['GET','POST'])
 def get_mcq(request):
     try:
-        user_id = request.data["user_id"]
-        user = Custom_user.objects.get(pk=user_id)
+        username = request.data["username"]
+        user = Custom_user.objects.get(pk=username)
         question_id = user.current_question
         question = Mcq.objects.get(pk=question_id)
         question.correct = "🔒"
@@ -45,8 +45,8 @@ def evaluate_mcq(question_id, option):
     ans = Mcq.objects.get(question_id=question_id)
     return True if ans.correct == option else False
 
-def update_score(user_id, question_id, status):
-    user = Custom_user.objects.get(pk=user_id)
+def update_score(username, question_id, status):
+    user = Custom_user.objects.get(pk=username)
 
     if status:
         if user.previous_question:
@@ -71,15 +71,14 @@ def submit(request):
     serializer = Submission_Serializer(data=request.data)
     
     if serializer.is_valid():
-        user_instance = serializer.validated_data['user_id']
+        user_instance = serializer.validated_data['username']
         question_id = serializer.validated_data['question_id'].question_id
         option = serializer.validated_data['selected_option']
 
     
-        user_id = user_instance.user_id
-
+        username = user_instance.username
         Status = evaluate_mcq(question_id, option)
-        update_score(user_id, question_id, Status)
+        update_score(username, question_id, Status)
 
         # Use the Mcq instance instead of its ID before saving it to the Submission model
         serializer.validated_data['status'] = Status
@@ -90,16 +89,29 @@ def submit(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
 
-        # Add custom claims
-        token['username'] = user.username
-        # ...
+# views.py
+from rest_framework import generics, status
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
 
-        return token
-    
-class MyTokenObtainPairView(TokenObtainPairView):
-    serializer_class=MyTokenObtainPairSerializer
+from .serializers import RegistrationSerializer, LoginSerializer
+
+
+
+class RegistrationView(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = RegistrationSerializer
+
+class LoginView(generics.CreateAPIView):
+    serializer_class = LoginSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'refresh': str(refresh),
+            'access': str(refresh.access_token),
+        }, status=status.HTTP_200_OK)
