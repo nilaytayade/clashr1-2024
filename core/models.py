@@ -18,12 +18,14 @@ class Mcq(models.Model):
     
 
 class Custom_user(models.Model):
-    username = models.IntegerField(primary_key=True)
+    username = models.CharField(max_length=255,primary_key=True)
     score = models.IntegerField(default=0)
     current_question = models.IntegerField(default=1,blank=False)
     previous_question = models.BooleanField(default=True,blank=False)
+
+    
     def __str__(self):
-        return str(self.user_id)+"👉"+str(self.current_question)+"🌟"+str(self.score)
+        return str(self.username)+"👉"+str(self.current_question)+"🌟"+str(self.score)
 
 
 class Submission(models.Model):
@@ -36,13 +38,3 @@ class Submission(models.Model):
     def __str__(self):
         return str(self.user_id)+" Question_no 👉 "+str(self.question_id)+" Selected_Option 👉 "+str(self.selected_option)+" 👉 "+str(self.status)
 
-
-# # models.py
-# from django.contrib.auth.models import AbstractUser
-
-# class User(AbstractUser):
-#     # Add any additional fields you want
-#     pass
-
-# User._meta.get_field('groups').remote_field.related_name = 'custom_user_groups'
-# User._meta.get_field('user_permissions').remote_field.related_name = 'custom_user_permissions'

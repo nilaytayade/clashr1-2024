@@ -89,29 +89,37 @@ def submit(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+def add_custom_user (username):
+    new_user = Custom_user(username=username)
+    new_user.save()
 
-# views.py
-# from rest_framework import generics, status
-# from rest_framework.response import Response
-# from rest_framework_simplejwt.tokens import RefreshToken
+ 
+    
+    
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import UserRegistrationSerializer
 
-# from .serializers import RegistrationSerializer, LoginSerializer
 
+class UserRegistrationView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = UserRegistrationSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            # Assuming add_custom_user handles any additional logic
+            add_custom_user(serializer.validated_data['username'])
+            return Response({'message': 'User registered successfully'}, status=status.HTTP_201_CREATED)
 
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# class RegistrationView(generics.CreateAPIView):
-#     queryset = User.objects.all()
-#     serializer_class = RegistrationSerializer
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from rest_framework.response import Response
 
-# class LoginView(generics.CreateAPIView):
-#     serializer_class = LoginSerializer
+class SecureEndpoint(APIView):
+    permission_classes = [IsAuthenticated]
 
-#     def create(self, request, *args, **kwargs):
-#         serializer = self.get_serializer(data=request.data)
-#         serializer.is_valid(raise_exception=True)
-#         user = serializer.validated_data
-#         refresh = RefreshToken.for_user(user)
-#         return Response({
-#             'refresh': str(refresh),
-#             'access': str(refresh.access_token),
-#         }, status=status.HTTP_200_OK)
+    def get(self, request, *args, **kwargs):
+        # Your secure endpoint logic here
+        return Response({'message': 'This is a secure endpoint'})
