@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 from .serializers import Mcq_Serializer, Custom_user_Serializer, Submission_Serializer
-from .models import Mcq, Custom_user, Submission,User
+from .models import Mcq, Custom_user, Submission
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
@@ -91,27 +91,27 @@ def submit(request):
 
 
 # views.py
-from rest_framework import generics, status
-from rest_framework.response import Response
-from rest_framework_simplejwt.tokens import RefreshToken
+# from rest_framework import generics, status
+# from rest_framework.response import Response
+# from rest_framework_simplejwt.tokens import RefreshToken
 
-from .serializers import RegistrationSerializer, LoginSerializer
+# from .serializers import RegistrationSerializer, LoginSerializer
 
 
 
-class RegistrationView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = RegistrationSerializer
+# class RegistrationView(generics.CreateAPIView):
+#     queryset = User.objects.all()
+#     serializer_class = RegistrationSerializer
 
-class LoginView(generics.CreateAPIView):
-    serializer_class = LoginSerializer
+# class LoginView(generics.CreateAPIView):
+#     serializer_class = LoginSerializer
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data
-        refresh = RefreshToken.for_user(user)
-        return Response({
-            'refresh': str(refresh),
-            'access': str(refresh.access_token),
-        }, status=status.HTTP_200_OK)
+#     def create(self, request, *args, **kwargs):
+#         serializer = self.get_serializer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         user = serializer.validated_data
+#         refresh = RefreshToken.for_user(user)
+#         return Response({
+#             'refresh': str(refresh),
+#             'access': str(refresh.access_token),
+#         }, status=status.HTTP_200_OK)

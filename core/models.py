@@ -37,12 +37,12 @@ class Submission(models.Model):
         return str(self.user_id)+" Question_no 👉 "+str(self.question_id)+" Selected_Option 👉 "+str(self.selected_option)+" 👉 "+str(self.status)
 
 
-# models.py
-from django.contrib.auth.models import AbstractUser
+# # models.py
+# from django.contrib.auth.models import AbstractUser
 
-class User(AbstractUser):
-    # Add any additional fields you want
-    pass
+# class User(AbstractUser):
+#     # Add any additional fields you want
+#     pass
 
-User._meta.get_field('groups').remote_field.related_name = 'custom_user_groups'
-User._meta.get_field('user_permissions').remote_field.related_name = 'custom_user_permissions'
+# User._meta.get_field('groups').remote_field.related_name = 'custom_user_groups'
+# User._meta.get_field('user_permissions').remote_field.related_name = 'custom_user_permissions'
