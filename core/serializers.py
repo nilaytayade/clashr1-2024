@@ -1,5 +1,8 @@
 from rest_framework import serializers
 from .models import Mcq,Custom_user,Submission
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 
 class Mcq_Serializer(serializers.ModelSerializer):
     class Meta:
@@ -39,3 +42,16 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework import serializers
+
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+        # Add custom claims to the token payload
+        token['username'] = user.username
+        return token
+    

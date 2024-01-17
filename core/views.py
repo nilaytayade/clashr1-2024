@@ -89,12 +89,11 @@ def submit(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
 def add_custom_user (username):
     new_user = Custom_user(username=username)
     new_user.save()
-
- 
-    
+  
     
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -121,5 +120,12 @@ class SecureEndpoint(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
-        # Your secure endpoint logic here
+        
         return Response({'message': 'This is a secure endpoint'})
+
+
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import CustomTokenObtainPairSerializer
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
