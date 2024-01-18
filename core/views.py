@@ -1,17 +1,18 @@
-from rest_framework.response import Response
-from rest_framework.decorators import api_view,permission_classes
-from rest_framework import status
-from .serializers import Mcq_Serializer, Custom_user_Serializer, Submission_Serializer
-from .models import Mcq, Custom_user, Submission
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import UserRegistrationSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import CustomTokenObtainPairSerializer
 from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from .serializers import (
+    Mcq_Serializer,
+    Custom_user_Serializer,
+    Submission_Serializer,
+    UserRegistrationSerializer,
+    CustomTokenObtainPairSerializer,
+)
+from .models import Mcq, Custom_user, Submission
 
 
 
@@ -21,8 +22,25 @@ POSTIVE_MARKS_2 = 2
 NEGATIVE_MARKS_1 = -2
 NEGATIVE_MARKS_2 = -1
 
+
+
 #TODO @permission_classes([IsAuthenticated])
 
+from django.http import JsonResponse
+
+def endpoints(request):
+    available_endpoints = [
+        '/endpoints/',
+        '/mcq/',
+        '/leaderboard/',
+        '/submit/',
+        '/login/',
+        '/token/refresh/',
+        '/register/',
+        '/list-endpoints/',
+    ]
+
+    return JsonResponse({'available_endpoints': available_endpoints})
 
 
 
