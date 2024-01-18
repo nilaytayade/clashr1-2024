@@ -1,19 +1,29 @@
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,permission_classes
 from rest_framework import status
 from .serializers import Mcq_Serializer, Custom_user_Serializer, Submission_Serializer
 from .models import Mcq, Custom_user, Submission
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import UserRegistrationSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import CustomTokenObtainPairSerializer
+from rest_framework.permissions import IsAuthenticated
 
 
 
-#GLOBAL VARIABLES
 POSTIVE_MARKS_1 = 4
 POSTIVE_MARKS_2 = 2
 
 NEGATIVE_MARKS_1 = -2
 NEGATIVE_MARKS_2 = -1
+
+#TODO @permission_classes([IsAuthenticated])
+
+
 
 
 @api_view(['GET','POST'])
@@ -35,6 +45,7 @@ def get_mcq(request):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_leaderboard(request):
     all_users = Custom_user.objects.all().order_by('-score')
     serializer = Custom_user_Serializer(all_users, many=True)
@@ -80,7 +91,7 @@ def submit(request):
         Status = evaluate_mcq(question_id, option)
         update_score(username, question_id, Status)
 
-        # Use the Mcq instance instead of its ID before saving it to the Submission model
+
         serializer.validated_data['status'] = Status
         serializer.save()
 
@@ -94,38 +105,28 @@ def add_custom_user (username):
     new_user = Custom_user(username=username)
     new_user.save()
   
-    
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from .serializers import UserRegistrationSerializer
-
 
 class UserRegistrationView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = UserRegistrationSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            # Assuming add_custom_user handles any additional logic
             add_custom_user(serializer.validated_data['username'])
             return Response({'message': 'User registered successfully'}, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
-from rest_framework.response import Response
-
-class SecureEndpoint(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, *args, **kwargs):
-        
-        return Response({'message': 'This is a secure endpoint'})
-
-
-from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import CustomTokenObtainPairSerializer
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+
+        if response.status_code == 200:
+            response['Authorization'] = 'Bearer ' + response.data['access']
+
+            secure_cookie = 'access_token=' + response.data['access'] + '; Secure; HttpOnly'
+            response.set_cookie(key='access_token', value=response.data['access'], httponly=True, secure=True)
+
+        return response
