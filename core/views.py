@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from .serializers import (
     Mcq_Serializer,
     Custom_user_Serializer,
@@ -11,10 +12,7 @@ from .serializers import (
     UserRegistrationSerializer,
     CustomTokenObtainPairSerializer,
 )
-from .models import (
-    Mcq, 
-    Custom_user, 
-    Submission,)
+from .models import Mcq, Custom_user, Submission
 
 
 
@@ -39,7 +37,7 @@ def endpoints(request):
         '/login/',
         '/token/refresh/',
         '/register/',
-        'endpoints/',
+        '/list-endpoints/',
     ]
 
     return JsonResponse({'available_endpoints': available_endpoints})
