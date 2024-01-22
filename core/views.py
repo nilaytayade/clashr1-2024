@@ -1,10 +1,16 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
-from .serializers import Mcq_Serializer, Custom_user_Serializer, Submission_Serializer
+from .serializers import Mcq_Serializer, Custom_user_Serializer, Submission_Serializer, UserRegistrationSerializer, CustomTokenObtainPairSerializer
 from .models import Mcq, Custom_user, Submission
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.views import TokenObtainPairView
+from django.middleware.csrf import CsrfViewMiddleware
+from django.views.decorators.csrf import csrf_protect
+from django.utils.decorators import method_decorator
 
 
 
@@ -95,10 +101,7 @@ def add_custom_user (username):
     new_user.save()
   
     
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from .serializers import UserRegistrationSerializer
+
 
 
 class UserRegistrationView(APIView):
@@ -112,20 +115,60 @@ class UserRegistrationView(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
-from rest_framework.response import Response
 
 class SecureEndpoint(APIView):
     permission_classes = [IsAuthenticated]
-
     def get(self, request, *args, **kwargs):
         
         return Response({'message': 'This is a secure endpoint'})
 
 
-from rest_framework_simplejwt.views import TokenObtainPairView
-from .serializers import CustomTokenObtainPairSerializer
+
+
+# class CustomTokenObtainPairView(TokenObtainPairView):
+#     serializer_class = CustomTokenObtainPairSerializer
+
+#
+# @method_decorator(csrf_protect, name='post')
+# class CustomTokenObtainPairView(TokenObtainPairView):
+#     serializer_class = CustomTokenObtainPairSerializer
+#
+#     def post(self, request, *args, **kwargs):
+#         response = super().post(request, *args, **kwargs)
+#
+#         if response.status_code == 200:
+#             # Set the access token in the "Authorization" header
+#             response['Authorization'] = 'Bearer ' + response.data['access']
+#
+#             # Set the access token as an HttpOnly secure cookie
+#             response.set_cookie(
+#                 key='access_token',
+#                 value=response.data['access'],
+#                 httponly=True,
+#                 # secure=True,  # Set to True for HTTPS
+#                 # samesite='Strict'  # Adjust this based on your requirements
+#             )
+#
+#         return response
+
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+
+        if response.status_code == 200:
+            # Set the access token in the "Authorization" header
+            response['Authorization'] = 'Bearer ' + response.data['access']
+
+            # Set the access token in an HTTP-only secure cookie
+            secure_cookie = 'access_token=' + response.data['access'] + '; Secure; HttpOnly'
+            response.set_cookie(key='access_token', value=response.data['access'], httponly=True, secure=True)
+
+            # Optionally, you can include additional headers
+            # response['X-Custom-Header'] = 'Custom Header Value'
+
+        return response
+
+
