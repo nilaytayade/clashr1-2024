@@ -22,8 +22,6 @@ class Custom_user(models.Model):
     score = models.IntegerField(default=0)
     current_question = models.IntegerField(default=1,blank=False)
     previous_question = models.BooleanField(default=True,blank=False)
-
-    
     def __str__(self):
         return str(self.username)+"👉"+str(self.current_question)+"🌟"+str(self.score)
 

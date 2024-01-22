@@ -14,6 +14,8 @@ from .serializers import (
 )
 from .models import Mcq, Custom_user, Submission
 
+import jwt
+
 
 
 POSTIVE_MARKS_1 = 4
@@ -48,6 +50,16 @@ def endpoints(request):
 def get_mcq(request):
     try:
         username = request.data["username"]
+        # token = request.COOKIES.get('access_token')
+        #
+        # if not token:
+        #     raise AuthenticationFailed('Unauthenticated')
+
+
+        # payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+
+        # user1 = Custom_user.objects.filter(id=payload['username']).first()
+
         user = Custom_user.objects.get(pk=username)
         question_id = user.current_question
         question = Mcq.objects.get(pk=question_id)
