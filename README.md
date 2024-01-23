@@ -14,7 +14,7 @@
      {
          "username": "some_username",
          "question_id": 1,
-         "selected_option": "Option A"
+         "selected_option": "A"
      }
      ```
 
