@@ -12,7 +12,7 @@
    - Method: `POST`
      ```json
      {
-         "username": "some_username",
+         "username": "new_user",
          "question_id": 1,
          "selected_option": "A"
      }
@@ -25,7 +25,9 @@
      {
          "username": "new_user",
          "password": "some_password",
-         "email": "new_user@example.com"
+         "email": "new_user@example.com",
+         "first_name": "First",
+         "last_name": "Last"
      }
      ```
 
@@ -34,7 +36,7 @@
    - Method: `POST`
      ```json
      {
-         "username": "existing_user",
-         "password": "user_password"
+         "username": "new_user",
+         "password": "some_password"
      }
      ```
